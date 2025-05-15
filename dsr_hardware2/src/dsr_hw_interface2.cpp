@@ -145,9 +145,9 @@ CallbackReturn DRHWInterface::on_init(const hardware_interface::HardwareInfo & i
             "[on_init] Hardware joint size : %zu, expected : 6", info.joints.size());
         return CallbackReturn::ERROR;
     }
-    RCLCPP_INFO(rclcpp::get_logger("dsr_hw_interface2"), 
-            "[on_init] Hardware name : %s, type : %s, class type : %s",
-            info_.name.c_str(), info_.type.c_str(), info_.hardware_class_type.c_str());
+    // RCLCPP_INFO(rclcpp::get_logger("dsr_hw_interface2"), 
+    //         "[on_init] Hardware name : %s, type : %s, class type : %s",
+    //         info_.name.c_str(), info_.type.c_str(), info_.hardware_class_type.c_str());
 
     for (const auto & joint : info_.joints)
     {
