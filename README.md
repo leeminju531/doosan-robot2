@@ -9,7 +9,7 @@
 
 ## Overview
     
-This package provides the function to control all models of Doosan robots in the ROS2(Humble) environment.
+This package provides the function to control all models of Doosan robots in the ROS2(Jazzy) environment.
 
 
 ## Installation
@@ -25,11 +25,11 @@ Before installing the package, ensure that the necessary dependencies are instal
 ```bash
 sudo apt-get update
 sudo apt-get install -y libpoco-dev libyaml-cpp-dev wget \
-                        ros-humble-control-msgs ros-humble-realtime-tools ros-humble-xacro \
-                        ros-humble-joint-state-publisher-gui ros-humble-ros2-control \
-                        ros-humble-ros2-controllers ros-humble-gazebo-msgs ros-humble-moveit-msgs \
-                        dbus-x11 ros-humble-moveit-configs-utils ros-humble-moveit-ros-move-group \
-                        ros-humble-gazebo-ros-pkgs ros-humble-ros-gz-sim ros-humble-ign-ros2-control
+                        ros-jazzy-control-msgs ros-jazzy-realtime-tools ros-jazzy-xacro \
+                        ros-jazzy-joint-state-publisher-gui ros-jazzy-ros2-control \
+                        ros-jazzy-ros2-controllers ros-jazzy-gazebo-msgs ros-jazzy-moveit-msgs \
+                        dbus-x11 ros-jazzy-moveit-configs-utils ros-jazzy-moveit-ros-move-group \
+                        ros-jazzy-gazebo-ros-pkgs ros-jazzy-ros-gz-sim ros-jazzy-ign-ros2-control
 
 
 ```
@@ -40,12 +40,12 @@ sudo apt-get install -y libpoco-dev libyaml-cpp-dev wget \
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 sudo apt-get update
-sudo apt-get install -y libignition-gazebo6-dev ros-humble-gazebo-ros-pkgs ros-humble-ros-gz-sim ros-humble-ros-gz
+sudo apt-get install -y libignition-gazebo6-dev ros-jazzy-gazebo-ros-pkgs ros-jazzy-ros-gz-sim ros-jazzy-ros-gz
 ```
 
 ### Package Installation
 
-Ensure that you have installed **ros-humble-desktop** using `apt-get`. We recommend placing the package inside:
+Ensure that you have installed **ros-jazzy-desktop** using `apt-get`. We recommend placing the package inside:
 
 ```bash
 mkdir -p ~/ros2_ws/src
@@ -55,7 +55,7 @@ cd ~/ros2_ws/src
 Clone the required repositories:
 
 ```bash
-git clone -b humble https://github.com/doosan-robotics/doosan-robot2.git
+git clone -b jazzy https://github.com/doosan-robotics/doosan-robot2.git
 ```
 
 Install dependencies:

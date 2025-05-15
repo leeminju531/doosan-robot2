@@ -1,8 +1,9 @@
 
 # Build with offical support (https://github.com/osrf/docker_images)
-FROM osrf/ros:humble-desktop
+FROM osrf/ros:jazzy-desktop
 
 
+RUN userdel -r ubuntu
 # UID specification can be gone in case of starting with devcontainer
 # https://github.com/microsoft/vscode-remote-release/issues/4946#issuecomment-1348583560
 ARG USERNAME=doosan-robotics
@@ -30,13 +31,13 @@ RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/in
 RUN apt-get update && apt-get install -y python3-pip \
   && apt-get install -y vim
 
-### Prerequisite installation elements before package installation
-RUN apt-get install -y libpoco-dev libyaml-cpp-dev dbus-x11
-RUN apt-get install -y ros-humble-control-msgs ros-humble-realtime-tools ros-humble-xacro &&\
-  apt-get install -y ros-humble-joint-state-publisher-gui ros-humble-ros2-control  &&\ 
-  apt-get install -y ros-humble-ros2-controllers ros-humble-gazebo-msgs ros-humble-moveit-msgs &&\
-  apt-get install -y ros-humble-gazebo-ros-pkgs ros-humble-ros-gz-sim ros-humble-moveit* &&\
-  apt-get install -y ros-humble-ign-ros2-control
+# ### Prerequisite installation elements before package installation
+# RUN apt-get install -y libpoco-dev libyaml-cpp-dev dbus-x11
+# RUN apt-get install -y ros-jazzy-control-msgs ros-jazzy-realtime-tools ros-jazzy-xacro &&\
+#   apt-get install -y ros-jazzy-joint-state-publisher-gui ros-jazzy-ros2-control  &&\ 
+#   apt-get install -y ros-jazzy-ros2-controllers ros-jazzy-gazebo-msgs ros-jazzy-moveit-msgs &&\
+#   apt-get install -y ros-jazzy-gazebo-ros-pkgs ros-jazzy-ros-gz-sim ros-jazzy-moveit* &&\
+#   apt-get install -y ros-jazzy-ign-ros2-control
 
 # Dood for emulator
 RUN apt-get update && apt-get install -y ca-certificates curl &&\
@@ -49,8 +50,10 @@ $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
 tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt-get update &&\
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
 RUN usermod -aG docker $USERNAME
 RUN newgrp docker
-
+### I added this configuration. at current configuration, the socket doesn't have a group with docker. 
+RUN chown root:docker /run/docker.sock
 
 ENV ROS_DOMAIN_ID=29

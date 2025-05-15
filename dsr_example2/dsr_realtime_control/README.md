@@ -2,7 +2,7 @@
 
 ## Overview
 
-This package provides the function to control **m1013** model of Doosan robots in the ROS2(Humble) environment.
+This package provides the function to control **m1013** model of Doosan robots in the ROS2(Jazzy) environment.
 You will be given two options(**Option [1] is recommended**):
 
 **[1]** It provides a way to control the robot using the Doosan API **without using the communication interface** of ROS2.

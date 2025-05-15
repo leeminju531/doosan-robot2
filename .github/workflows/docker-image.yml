@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "humble" ]
+    branches: [ "jazzy" ]
   pull_request:
-    branches: [ "humble" ]
+    branches: [ "jazzy" ]
 
 jobs:
   doosan-jobs: 
@@ -13,10 +13,10 @@ jobs:
     strategy:
       matrix:
         ros_distribution:
-          - humble
+          - jazzy
         include:
           - docker_image: ubuntu:jammy
-            ros_distribution: humble
+            ros_distribution: jazzy
             ros_version: 2
     services:
       emulator-server:
