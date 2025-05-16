@@ -3,12 +3,30 @@
 FROM osrf/ros:jazzy-desktop
 
 
-RUN userdel -r ubuntu
-# UID specification can be gone in case of starting with devcontainer
-# https://github.com/microsoft/vscode-remote-release/issues/4946#issuecomment-1348583560
 ARG USERNAME=doosan-robotics
-ARG USER_UID=1000
-ARG USER_GID=1000
+ARG USER_UID
+ARG USER_GID
+ARG DOCKER_GID
+
+RUN echo "USER_UID: ${USER_UID}" && \
+    echo "USER_GID: ${USER_GID}" && \
+    echo "DOCKER_GID: ${DOCKER_GID}"
+
+# Remove the group if it exists
+
+# RUN groupdel $(getent group ${USER_GID} | cut -d: -f1)
+# RUN userdel $(getent passwd ${USER_UID} | cut -d: -f1)
+# RUN groupdel $(getent group ${DOCKER_GID} | cut -d: -f1)
+
+# Remove the user if it exists
+RUN if getent passwd ${USER_UID} >/dev/null 2>&1; then \
+      userdel $(getent passwd ${USER_UID} | cut -d: -f1); \
+    fi
+
+RUN if getent group ${DOCKER_GID} >/dev/null 2>&1; then \
+      groupdel $(getent group ${DOCKER_GID} | cut -d: -f1); \
+    fi
+
 # Create a non-root user
 RUN groupadd --gid $USER_GID $USERNAME \
   && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -51,9 +69,8 @@ tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt-get update &&\
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-RUN usermod -aG docker $USERNAME
+
+RUN groupadd -g ${DOCKER_GID} docker && usermod -aG docker $USERNAME
 RUN newgrp docker
-### I added this configuration. at current configuration, the socket doesn't have a group with docker. 
-RUN chown root:docker /run/docker.sock
 
 ENV ROS_DOMAIN_ID=29

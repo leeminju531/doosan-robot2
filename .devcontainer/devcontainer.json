@@ -4,6 +4,12 @@
 	"build": {
 		"args": {
 			"WORKSPACE": "${containerWorkspaceFolder}",
+			// "USER_UID": "$(id -u)",
+			// "USER_GID": "$(id -g)",
+			// "DOCKER_GID": "$(getent group docker | cut -d: -f3)"
+			"USER_UID": "${localEnv:USER_UID}",
+			"USER_GID": "${localEnv:USER_GID}",
+			"DOCKER_GID": "${localEnv:DOCKER_GID}"
 		}
 	},
 	"remoteUser": "doosan-robotics",
