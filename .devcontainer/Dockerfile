@@ -58,6 +58,8 @@ RUN apt-get update && apt-get install -y python3-pip \
 #   apt-get install -y ros-jazzy-ign-ros2-control
 
 # Dood for emulator
+RUN groupadd -g ${DOCKER_GID} docker
+
 RUN apt-get update && apt-get install -y ca-certificates curl &&\
 install -m 0755 -d /etc/apt/keyrings &&\
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc &&\
@@ -70,7 +72,7 @@ RUN apt-get update &&\
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 
-RUN groupadd -g ${DOCKER_GID} docker && usermod -aG docker $USERNAME
-RUN newgrp docker
+RUN usermod -aG docker $USERNAME
+# # RUN newgrp docker
 
-ENV ROS_DOMAIN_ID=29
+# ENV ROS_DOMAIN_ID=29
