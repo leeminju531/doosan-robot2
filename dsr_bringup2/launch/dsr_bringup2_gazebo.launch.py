@@ -47,10 +47,10 @@ def generate_launch_description():
         DeclareLaunchArgument('P',   default_value = '0',     description = 'Location Pitch on Gazebo'    ),
         DeclareLaunchArgument('Y',   default_value = '0',     description = 'Location Yaw on Gazebo'    ),
         DeclareLaunchArgument('rt_host',    default_value = '192.168.137.50',     description = 'ROBOT_RT_IP'    ),
-        DeclareLaunchArgument('use_sim_time', default_value='true', description='Use simulation time'),
+        DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation time'),
     ]
     
-    set_use_sim_time = SetLaunchConfiguration(name='use_sim_time', value='true')
+    set_use_sim_time = SetLaunchConfiguration(name='use_sim_time', value='false')
     xacro_path = os.path.join( get_package_share_directory('dsr_description2'), 'xacro')
     # Initialize Arguments
     gui = LaunchConfiguration("gui")

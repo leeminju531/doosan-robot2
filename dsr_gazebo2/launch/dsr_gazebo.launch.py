@@ -19,7 +19,7 @@ from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
-
+from launch.actions import ExecuteProcess
 
 ARGUMENTS =[ 
     DeclareLaunchArgument('name',  default_value = '',     description = 'NAME_SPACE'     ),
@@ -34,7 +34,7 @@ ARGUMENTS =[
     DeclareLaunchArgument('R',   default_value = '0',     description = 'Location Roll on Gazebo'    ),
     DeclareLaunchArgument('P',   default_value = '0',     description = 'Location Pitch on Gazebo'    ),
     DeclareLaunchArgument('Y',   default_value = '0',     description = 'Location Yaw on Gazebo'    ),
-    DeclareLaunchArgument('use_sim_time', default_value='true', description='Use simulation time'),
+    DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation time'),
 
 ]
 
@@ -166,12 +166,28 @@ def generate_launch_description():
     #         on_exit=[dsr_position_controller_spawner_action],
     #     )
     # )
+    ### Unique part on gazebo ros.
+    ### to remove "No clock received, using time argument instead! Check your node's clock configuration (use_sim_time parameter) and if a valid clock source is available"
+    t = PathJoinSubstitution([LaunchConfiguration('name'), 'gz', 'controller_manager'])
+    aaa = TimerAction(
+        period=2.0,
+        actions=[ExecuteProcess(
+                cmd=[
+                    'ros2', 'param', 'set',
+                    t,
+                    'use_sim_time', 'false'
+                ],
+                output='screen'
+            )]
+    )
+
 
     nodes = [
         gazebo,
         node_robot_state_publisher,
         gz_spawn_entity,
         dsr_position_controller_spawner_action,
+        aaa
         # delay_dsr_position_controller_spawner_after_joint_state_broadcaster_spawner
     ]
 
