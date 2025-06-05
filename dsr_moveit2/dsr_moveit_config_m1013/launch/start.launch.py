@@ -27,24 +27,14 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 
 def rviz_node_function(context):
-    """런치 시점에서 model 값을 평가하고, 패키지 경로를 찾은 후 launch 파일 실행"""
     model_value = LaunchConfiguration('model').perform(context)
 
-    # 패키지 이름 생성
-    model_value_str = f"{model_value}"
-    package_name_str = f"dsr_moveit_config_{model_value}"
-
-    # FindPackageShare 평가
-    package_path_str = FindPackageShare(package_name_str).perform(context)
-
-    print("패키지 이름:", package_name_str)
-    print("패키지 경로:", package_path_str)
 
     # Moveit2 config 
     moveit_config = (
-        MoveItConfigsBuilder(model_value_str, "robot_description", package_name_str)
-        .robot_description(file_path=f"config/{model_value}.urdf.xacro")
-        .robot_description_semantic(file_path="config/dsr.srdf")
+        MoveItConfigsBuilder("m1013", "robot_description", "dsr_moveit_config_m1013")
+        .robot_description(file_path=f"config/m1013.urdf.xacro")
+        .robot_description_semantic(file_path="config/m1013.srdf")
         .trajectory_execution(file_path="config/moveit_controllers.yaml")
         .to_moveit_configs()
     )
@@ -58,10 +48,11 @@ def rviz_node_function(context):
 
     # RViz
     rviz_base = os.path.join(
-        get_package_share_directory(package_name_str), "launch"
+        get_package_share_directory("dsr_moveit_config_m1013"), "config"
     )
     rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
-    
+
+
     return [run_move_group_node, 
         Node(
         package="rviz2",
@@ -85,7 +76,7 @@ def generate_launch_description():
         DeclareLaunchArgument('host',  default_value = '127.0.0.1', description = 'ROBOT_IP'       ),
         DeclareLaunchArgument('port',  default_value = '12345',     description = 'ROBOT_PORT'     ),
         DeclareLaunchArgument('mode',  default_value = 'virtual',   description = 'OPERATION MODE' ),
-        DeclareLaunchArgument('model', default_value = 'm0617',     description = 'ROBOT_MODEL'    ),
+        DeclareLaunchArgument('model', default_value = 'm1013',     description = 'ROBOT_MODEL'    ),
         DeclareLaunchArgument('color', default_value = 'white',     description = 'ROBOT_COLOR'    ),
         DeclareLaunchArgument('gui',   default_value = 'false',     description = 'Start RViz2'    ),
         DeclareLaunchArgument('gz',    default_value = 'false',     description = 'USE GAZEBO SIM'    ),
@@ -178,12 +169,6 @@ def generate_launch_description():
         name='robot_state_publisher',
         namespace=LaunchConfiguration('name'),
         output='both',
-        # remappings=[
-        #     (
-        #         "/joint_states",
-        #         "/dsr/joint_states",
-        #     ),
-        # ],
         parameters=[{
         'robot_description': Command(['xacro', ' ', xacro_path, '/', LaunchConfiguration('model'), '.urdf.xacro color:=', LaunchConfiguration('color')])           
     }])
@@ -216,16 +201,6 @@ def generate_launch_description():
     # # Moveit2 config 
     rviz_node = OpaqueFunction(function=rviz_node_function)
     
-
-    
-    # joint_trajectory_controller_spawner = Node(
-    #     package="controller_manager",
-    #     # namespace=LaunchConfiguration('name'),
-    #     executable="spawner",
-    #     arguments=["dsr_joint_trajectory", "-c", "dsr/controller_manager", "-n", "dsr"],
-    # )
-
-
     # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -234,14 +209,6 @@ def generate_launch_description():
         )
     )
 
-    # Delay start of robot_controller after `joint_state_broadcaster`
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
-    )
-    
     # Delay start of robot_controller after `joint_state_broadcaster`
     delay_control_node_after_connection_node = RegisterEventHandler(
         event_handler=OnProcessExit(
